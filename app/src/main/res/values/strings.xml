@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NOHA</string>
+    <string name="eventos">Eventos</string>
+    <string name="horarios">Horarios</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="disponibilidad">Disponibilidad</string>
+</resources>
