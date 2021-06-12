@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="eventos">Eventos</string>
+    <string name="horarios">Horarios</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="disponibilidad">Disponibilidad</string>
+</resources>
