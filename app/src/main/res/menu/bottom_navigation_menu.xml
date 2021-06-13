@@ -1,22 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/calendar"
+        android:id="@+id/Home"
         android:enabled="true"
-        android:icon="@drawable/ic_calendar"
-        android:title="@string/eventos"/>
-    <item
-        android:id="@+id/horarios"
-        android:enabled="true"
-        android:icon="@drawable/ic_horarios"
-        android:title="@string/horarios"/>
+        android:icon="@drawable/ic_inicio"
+        android:title="@string/inicio"/>
+
     <item
         android:id="@+id/notificaciones"
         android:enabled="true"
         android:icon="@drawable/ic_notificaciones"
         android:title="@string/notificaciones"/>
-    <item
-        android:id="@+id/disponibilidad"
-        android:enabled="true"
-        android:icon="@drawable/ic_disponibilidad"
-        android:title="@string/disponibilidad"/>
 </menu>
