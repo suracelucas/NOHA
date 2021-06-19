@@ -2,4 +2,11 @@
     <string name="app_name">NOHA</string>
     <string name="inicio">Inicio</string>
     <string name="notificaciones">Notificaciones</string>
+    <string name="lunes">Lunes</string>
+    <string name="martes">Martes</string>
+    <string name="miercoles">Miercoles</string>
+    <string name="jueves">Jueves</string>
+    <string name="viernes">Viernes</string>
+    <string name="sabado">Sábado</string>
+    <string name="domingo">Domingo</string>
 </resources>
