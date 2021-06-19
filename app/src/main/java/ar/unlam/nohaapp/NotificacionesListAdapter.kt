@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
+import android.widget.Toast
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(
     private val context: NotificacionesActivity,
@@ -28,19 +30,36 @@ class NotificacionesListAdapter internal constructor(
         convertView: View?,
         parent: ViewGroup
     ): View {
-        var convertView = convertView
+        var convertedView = convertView
         val expandedListText = getChild(listPosition, expandedListPosition) as String
 
-        if (convertView == null) {
+        if (convertedView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = layoutInflater.inflate(R.layout.eventos_list, null)
+            convertedView = layoutInflater.inflate(R.layout.eventos_list, parent, false)
         }
 
-        val expandedListTextView = convertView!!.findViewById<TextView>(R.id.eventos_tv)
+        val expandedListTextView = convertedView!!.findViewById<TextView>(R.id.eventos_tv)
         expandedListTextView.text = expandedListText
 
-        return convertView
+        val switch: SwitchMaterial = convertedView.findViewById(R.id.switch_noti)
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Toast.makeText(
+                    context,
+                    "Notificar $expandedListText: SI",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Notificar $expandedListText: NO",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        return convertedView
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
@@ -65,16 +84,16 @@ class NotificacionesListAdapter internal constructor(
         convertView: View?,
         parent: ViewGroup
     ): View {
-        var convertView = convertView
+        var convertedView = convertView
         val listTitle = getGroup(listPosition) as String
-        if (convertView == null) {
+        if (convertedView == null) {
             val layoutInflater =
                 this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = layoutInflater.inflate(R.layout.lugar_list, null)
+            convertedView = layoutInflater.inflate(R.layout.lugar_list, parent, false)
         }
-        val listTitleTextView = convertView!!.findViewById<TextView>(R.id.lugar_tv)
+        val listTitleTextView = convertedView!!.findViewById<TextView>(R.id.lugar_tv)
         listTitleTextView.text = listTitle
-        return convertView
+        return convertedView
     }
 
     override fun hasStableIds(): Boolean {
