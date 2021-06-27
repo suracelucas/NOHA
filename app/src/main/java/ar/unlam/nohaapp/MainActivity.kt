@@ -3,8 +3,10 @@ package ar.unlam.nohaapp
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
-import java.util.*
+import ar.unlam.nohaapp.fragments.HomeFragment
+import ar.unlam.nohaapp.fragments.NotificationFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding:ActivityMainBinding
@@ -12,27 +14,24 @@ class MainActivity : AppCompatActivity() {
         binding  = ActivityMainBinding.inflate(LayoutInflater.from(this))
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.diaSemana.text = ""
-        if(binding.diaSemana.text == "") {
-            binding.diaSemana.text = getString(getDay())
-        }
-        setUpView()
-    }
 
-    private fun setUpView() {
-        val myDataSet = Datasource().loadAffirmations()
-        binding.novedades.adapter = ItemsAdapter(this, myDataSet)
-    }
+        val homeFragment = HomeFragment()
+        val notificationFragment = NotificationFragment()
 
-    fun getDay():Int{
-        return when(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)){
-            1->R.string.domingo
-            2->R.string.lunes
-            3->R.string.martes
-            4->R.string.miercoles
-            5->R.string.jueves
-            6->R.string.viernes
-            else-> R.string.sabado
+        makeCurrentFragment(homeFragment)
+
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.Home -> makeCurrentFragment(homeFragment)
+                R.id.notificaciones->makeCurrentFragment(notificationFragment)
+            }
+            true
         }
     }
+
+    private fun makeCurrentFragment(fragment: Fragment) =
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.fl_wrapper, fragment)
+                commit()
+            }
 }
