@@ -1,13 +1,12 @@
 package ar.unlam.nohaapp
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ar.unlam.nohaapp.databinding.ItemNovedadBinding
 
 class ItemsAdapter(
-        private val context: Context,
+        //private val context: Context,
         private val items : List<ItemModel>
 ): RecyclerView.Adapter<ItemViewHolder>() {
 
