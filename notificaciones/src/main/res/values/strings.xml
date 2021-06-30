@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">notificaciones</string>
+    <string name="eventos_tv">Evento</string>
+    <string name="lugar_tv">Lugar</string>
+</resources>

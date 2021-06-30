@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
-import ar.unlam.nohaapp.data.*
+import ar.unlam.nohaapp.notificaciones.data.*
 import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
 import ar.unlam.nohaapp.fragments.HomeFragment
-import ar.unlam.nohaapp.fragments.NotificationFragment
+import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding

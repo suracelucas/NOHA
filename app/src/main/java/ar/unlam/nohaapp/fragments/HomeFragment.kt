@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.Datasource
-import ar.unlam.nohaapp.ItemsAdapter
+import ar.unlam.nohaapp.adapters.ItemsAdapter
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.FragmentHomeBinding
 import java.util.*

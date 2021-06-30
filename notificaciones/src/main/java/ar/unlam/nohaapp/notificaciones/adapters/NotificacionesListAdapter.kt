@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp
+package ar.unlam.nohaapp.notificaciones.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import android.widget.Toast
-import ar.unlam.nohaapp.fragments.NotificationFragment
+import ar.unlam.nohaapp.notificaciones.Evento
+import ar.unlam.nohaapp.notificaciones.R
+import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(
@@ -37,7 +39,8 @@ class NotificacionesListAdapter internal constructor(
 
         if (convertedView == null) {
             val layoutInflater =
-                context.activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                context.requireActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertedView = layoutInflater.inflate(R.layout.eventos_list, parent, false)
         }
 
@@ -111,7 +114,8 @@ class NotificacionesListAdapter internal constructor(
 
         if (convertedView == null) {
             val layoutInflater =
-                this.context.activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                context.requireActivity()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertedView = layoutInflater.inflate(R.layout.lugar_list, parent, false)
         }
 
