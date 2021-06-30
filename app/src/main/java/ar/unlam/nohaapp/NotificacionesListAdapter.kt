@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import android.widget.Toast
+import ar.unlam.nohaapp.fragments.NotificationFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(
-    private val context: NotificacionesActivity,
+    private val context: NotificationFragment,
     private val lugarList: List<String>,
     private val eventosList: HashMap<String, List<Evento>>
 ) : BaseExpandableListAdapter() {
@@ -36,7 +37,7 @@ class NotificacionesListAdapter internal constructor(
 
         if (convertedView == null) {
             val layoutInflater =
-                this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                context.activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertedView = layoutInflater.inflate(R.layout.eventos_list, parent, false)
         }
 
@@ -47,26 +48,30 @@ class NotificacionesListAdapter internal constructor(
             if (isChecked) {
                 notificar = true
                 Toast.makeText(
-                    context,
-                    "Notificar $nombreEvento: SI \n ParentID: ${getGroupId(listPosition)} \n ChildID: ${
+                    context.activity,
+                    "Notificar $nombreEvento: SI \n" /* +
+                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
                         getChildId(
                             listPosition,
                             childPosition
                         )
-                    } \n Notificar: $notificar",
+                    } \n Notificar: $notificar"
+                    */,
                     Toast.LENGTH_SHORT
                 ).show()
 
             } else {
                 notificar = false
                 Toast.makeText(
-                    context,
-                    "Notificar $nombreEvento: NO \n ParentID: ${getGroupId(listPosition)} \n ChildID: ${
+                    context.activity,
+                    "Notificar $nombreEvento: NO \n" /* +
+                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
                         getChildId(
                             listPosition,
                             childPosition
                         )
-                    } \n Notificar: $notificar",
+                    } \n Notificar: $notificar"
+                    */,
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -106,7 +111,7 @@ class NotificacionesListAdapter internal constructor(
 
         if (convertedView == null) {
             val layoutInflater =
-                this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                this.context.activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertedView = layoutInflater.inflate(R.layout.lugar_list, parent, false)
         }
 

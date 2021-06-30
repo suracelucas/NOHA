@@ -11,4 +11,6 @@
     <string name="domingo">Domingo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="eventos_tv">Evento</string>
+    <string name="lugar_tv">Lugar</string>
 </resources>
