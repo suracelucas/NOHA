@@ -7,19 +7,20 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import android.widget.Toast
-import ar.unlam.nohaapp.notificaciones.Evento
 import ar.unlam.nohaapp.notificaciones.R
+import ar.unlam.nohaapp.notificaciones.data.ActividadEntity
+import ar.unlam.nohaapp.notificaciones.data.LugarEntity
 import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(
     private val context: NotificationFragment,
-    private val lugarList: List<String>,
-    private val eventosList: HashMap<String, List<Evento>>
+    private val lugarList: List<LugarEntity>,
+    private val actividadesList: HashMap<LugarEntity, List<ActividadEntity>>,
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, childPosition: Int): Any {
-        return eventosList[lugarList[listPosition]]!![childPosition]
+        return actividadesList[lugarList[listPosition]]!![childPosition]
     }
 
     override fun getChildId(listPosition: Int, childPosition: Int): Long {
@@ -34,8 +35,9 @@ class NotificacionesListAdapter internal constructor(
         parent: ViewGroup,
     ): View {
         var convertedView = convertView
-        val nombreEvento = eventosList[lugarList[listPosition]]!![childPosition].nombreEvento
-        var notificar = eventosList[lugarList[listPosition]]!![childPosition].notificar
+        val currentChild = actividadesList[lugarList[listPosition]]!![childPosition]
+        val nombreActividad = currentChild.nombreActividad
+        var notificar = currentChild.notificar
 
         if (convertedView == null) {
             val layoutInflater =
@@ -52,14 +54,7 @@ class NotificacionesListAdapter internal constructor(
                 notificar = true
                 Toast.makeText(
                     context.activity,
-                    "Notificar $nombreEvento: SI \n" /* +
-                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
-                        getChildId(
-                            listPosition,
-                            childPosition
-                        )
-                    } \n Notificar: $notificar"
-                    */,
+                    "Notificar $nombreActividad: SI \n Notificar: $notificar",
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -67,14 +62,7 @@ class NotificacionesListAdapter internal constructor(
                 notificar = false
                 Toast.makeText(
                     context.activity,
-                    "Notificar $nombreEvento: NO \n" /* +
-                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
-                        getChildId(
-                            listPosition,
-                            childPosition
-                        )
-                    } \n Notificar: $notificar"
-                    */,
+                    "Notificar $nombreActividad: NO \n Notificar: $notificar",
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -82,13 +70,13 @@ class NotificacionesListAdapter internal constructor(
         }
 
         val childTextView = convertedView.findViewById<TextView>(R.id.eventos_tv)
-        childTextView.text = nombreEvento
+        childTextView.text = nombreActividad
 
         return convertedView
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
-        return eventosList[lugarList[listPosition]]!!.size
+        return actividadesList[lugarList[listPosition]]!!.size
     }
 
     override fun getGroup(listPosition: Int): Any {
@@ -110,7 +98,8 @@ class NotificacionesListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertedView = convertView
-        val listTitle = getGroup(listPosition) as String
+        val currentGroup = lugarList[listPosition]
+        val listTitle = currentGroup.nombreLugar
 
         if (convertedView == null) {
             val layoutInflater =
