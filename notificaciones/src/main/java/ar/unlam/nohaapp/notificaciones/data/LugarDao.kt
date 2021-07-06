@@ -8,11 +8,11 @@ import androidx.room.Query
 
 @Dao
 interface LugarDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun save(entity: LugarEntity)
 
     @Query("SELECT * FROM lugares")
-    fun getAll(): LiveData<List<LugarEntity>>
+    fun getAll(): List<LugarEntity>
 
     @Query("SELECT nombreLugar FROM lugares WHERE idLugar = :id")
     fun getNombreLugarById(id: Short): String

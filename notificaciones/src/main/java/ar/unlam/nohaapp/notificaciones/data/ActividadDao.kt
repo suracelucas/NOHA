@@ -8,11 +8,11 @@ import androidx.room.Query
 
 @Dao
 interface ActividadDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun save(entity: ActividadEntity)
 
     @Query("SELECT * FROM actividades")
-    fun getAll(): LiveData<List<ActividadEntity>>
+    fun getAll(): List<ActividadEntity>
 
     @Query("SELECT * FROM actividades WHERE id = :id")
     fun getActividadById(id: Short): LiveData<List<ActividadEntity>>
