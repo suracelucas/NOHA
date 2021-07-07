@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.services
+package ar.unlam.app.actividades.services
 
 import ar.unlam.nohaapp.model.Weather
 import retrofit2.Call
