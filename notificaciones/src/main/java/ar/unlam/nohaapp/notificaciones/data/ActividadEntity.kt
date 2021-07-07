@@ -1,7 +1,6 @@
 package ar.unlam.nohaapp.notificaciones.data
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -24,5 +23,6 @@ data class ActividadEntity(
     @ColumnInfo(name = "dia")
     var dia: Short,
 
-    @Embedded val lugar: LugarEntity
+    @ColumnInfo(name = "idLugar")
+    var idLugar: Short,
 )
