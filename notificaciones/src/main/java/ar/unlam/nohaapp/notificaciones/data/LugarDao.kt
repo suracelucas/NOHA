@@ -1,18 +1,16 @@
 package ar.unlam.nohaapp.notificaciones.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
 interface LugarDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun save(entity: LugarEntity)
 
     @Query("SELECT * FROM lugares")
-    fun getAll(): LiveData<List<LugarEntity>>
+    fun getAll(): List<LugarEntity>
 
     @Query("SELECT nombreLugar FROM lugares WHERE idLugar = :id")
     fun getNombreLugarById(id: Short): String

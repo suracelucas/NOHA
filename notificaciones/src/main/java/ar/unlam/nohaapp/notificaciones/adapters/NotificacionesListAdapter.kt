@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import android.widget.Toast
-import ar.unlam.nohaapp.notificaciones.Evento
 import ar.unlam.nohaapp.notificaciones.R
+import ar.unlam.nohaapp.notificaciones.data.*
 import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(
     private val context: NotificationFragment,
-    private val lugarList: List<String>,
-    private val eventosList: HashMap<String, List<Evento>>
+    private val actividadesList: List<LugaresConActividadesEntity>,
+    private val database: RoomNohaDB
 ) : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, childPosition: Int): Any {
-        return eventosList[lugarList[listPosition]]!![childPosition]
+        return actividadesList[listPosition].actividades[childPosition]
     }
 
     override fun getChildId(listPosition: Int, childPosition: Int): Long {
@@ -34,69 +34,53 @@ class NotificacionesListAdapter internal constructor(
         parent: ViewGroup,
     ): View {
         var convertedView = convertView
-        val nombreEvento = eventosList[lugarList[listPosition]]!![childPosition].nombreEvento
-        var notificar = eventosList[lugarList[listPosition]]!![childPosition].notificar
 
-        if (convertedView == null) {
-            val layoutInflater =
-                context.requireActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertedView = layoutInflater.inflate(R.layout.eventos_list, parent, false)
-        }
+        val currentChild = actividadesList[listPosition].actividades[childPosition]
+        val nombreActividad = currentChild.nombreActividad
+
+        val layoutInflater =
+            context.requireActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        convertedView = layoutInflater.inflate(R.layout.eventos_list, parent, false)
 
         val switch: SwitchMaterial = convertedView!!.findViewById(R.id.switch_noti)
+        switch.isChecked = getNotificarState(nombreActividad)
 
-        switch.isChecked = notificar
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                notificar = true
+                setNotificarOn(nombreActividad)
                 Toast.makeText(
                     context.activity,
-                    "Notificar $nombreEvento: SI \n" /* +
-                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
-                        getChildId(
-                            listPosition,
-                            childPosition
-                        )
-                    } \n Notificar: $notificar"
-                    */,
+                    "Notificar $nombreActividad: SI",
                     Toast.LENGTH_SHORT
                 ).show()
-
             } else {
-                notificar = false
+                setNotificarOff(nombreActividad)
                 Toast.makeText(
                     context.activity,
-                    "Notificar $nombreEvento: NO \n" /* +
-                            " ParentID: ${getGroupId(listPosition)} \n ChildID: ${
-                        getChildId(
-                            listPosition,
-                            childPosition
-                        )
-                    } \n Notificar: $notificar"
-                    */,
+                    "Notificar $nombreActividad: NO",
                     Toast.LENGTH_SHORT
                 ).show()
-
             }
         }
 
+
         val childTextView = convertedView.findViewById<TextView>(R.id.eventos_tv)
-        childTextView.text = nombreEvento
+        childTextView.text = nombreActividad
 
         return convertedView
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
-        return eventosList[lugarList[listPosition]]!!.size
+        return actividadesList[listPosition].actividades.size
     }
 
     override fun getGroup(listPosition: Int): Any {
-        return lugarList[listPosition]
+        return actividadesList[listPosition]
     }
 
     override fun getGroupCount(): Int {
-        return lugarList.size
+        return actividadesList.size
     }
 
     override fun getGroupId(listPosition: Int): Long {
@@ -110,14 +94,13 @@ class NotificacionesListAdapter internal constructor(
         parent: ViewGroup
     ): View {
         var convertedView = convertView
-        val listTitle = getGroup(listPosition) as String
+        val currentGroup = actividadesList[listPosition]
+        val listTitle = currentGroup.lugar.nombreLugar
 
-        if (convertedView == null) {
-            val layoutInflater =
-                context.requireActivity()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertedView = layoutInflater.inflate(R.layout.lugar_list, parent, false)
-        }
+        val layoutInflater =
+            context.requireActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        convertedView = layoutInflater.inflate(R.layout.lugar_list, parent, false)
 
         val listTitleTextView = convertedView!!.findViewById<TextView>(R.id.lugar_tv)
         listTitleTextView.text = listTitle
@@ -131,6 +114,18 @@ class NotificacionesListAdapter internal constructor(
 
     override fun isChildSelectable(listPosition: Int, childPosition: Int): Boolean {
         return true
+    }
+
+    private fun getNotificarState(nombreActividad: String): Boolean {
+        return database.actividadDao().getNotificarByName(nombreActividad)
+    }
+
+    private fun setNotificarOn(nombreActividad: String) {
+        database.actividadDao().setNotificarByID(nombreActividad, 1)
+    }
+
+    private fun setNotificarOff(nombreActividad: String) {
+        database.actividadDao().setNotificarByID(nombreActividad, 0)
     }
 
 }
