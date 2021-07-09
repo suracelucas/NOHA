@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.model
+package ar.unlam.nohaapp.data.model
 
 data class Weather (
     var weather: List<WeatherInfo>,

@@ -1,16 +1,16 @@
-package ar.unlam.nohaapp
+package ar.unlam.nohaapp.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.room.Room
+import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
 import ar.unlam.nohaapp.notificaciones.data.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.LugarEntity
 import ar.unlam.nohaapp.notificaciones.data.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
-import ar.unlam.nohaapp.ui.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding

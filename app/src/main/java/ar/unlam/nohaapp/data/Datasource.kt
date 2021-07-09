@@ -1,7 +1,7 @@
 package ar.unlam.nohaapp.data
 
 import ar.unlam.nohaapp.R
-import ar.unlam.nohaapp.model.ItemModel
+import ar.unlam.nohaapp.data.model.ItemModel
 
 class Datasource {
     fun loadAffirmations(): List<ItemModel> {
