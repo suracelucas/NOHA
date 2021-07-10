@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.room.Room
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
+import ar.unlam.nohaapp.ui.view.HomeFragment
 import ar.unlam.nohaapp.notificaciones.data.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.LugarEntity
 import ar.unlam.nohaapp.notificaciones.data.RoomNohaDB
+import ar.unlam.nohaapp.notificaciones.data.*
 import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var database: RoomNohaDB
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        val provider = DatabaseProvider()
+        database = provider.getInstanceDatabase(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -32,10 +36,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
-        createDatabase()
-        insertLugarData()
-        insertActividadData()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =
@@ -44,24 +44,27 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
 
-    private fun createDatabase() {
-        database = Room.databaseBuilder(
-            this,
-            RoomNohaDB::class.java,
-            "noha_db"
-        ).allowMainThreadQueries().build()
+    /*
+    private fun resetDatabase() {
+        database.clearAllTables()
+        insertLugarData()
+        insertActividadData()
     }
 
     private fun insertLugarData() {
-        database.lugarDao().save(LugarEntity(1, "Buffet", R.drawable.image_buffet))
-        database.lugarDao().save(LugarEntity(2, "Salón", R.drawable.image_recreacion))
-        database.lugarDao().save(LugarEntity(3, "Gimnasio", R.drawable.image_gimnasio))
-        database.lugarDao().save(LugarEntity(4, "Natatorio", R.drawable.image_pileta))
-        database.lugarDao().save(LugarEntity(5, "Spa", R.drawable.image_masajes))
+        database.lugarDao()
+            .save(LugarEntity(1, "Buffet", R.drawable.image_buffet))
+        database.lugarDao()
+            .save(LugarEntity(2, "Salón", R.drawable.image_salon))
+        database.lugarDao()
+            .save(LugarEntity(3, "Gimnasio", R.drawable.image_gimnasio))
+        database.lugarDao()
+            .save(LugarEntity(4, "Natatorio", R.drawable.image_natatorio))
+        database.lugarDao()
+            .save(LugarEntity(5, "Spa", R.drawable.image_spa))
     }
 
     private fun insertActividadData() {
-        val lugar = database.lugarDao()
         database.actividadDao().save(
             ActividadEntity(
                 1,
@@ -69,178 +72,150 @@ class MainActivity : AppCompatActivity() {
                 "07:00 - 10:00",
                 false,
                 8,
-                LugarEntity(
-                    1, lugar.getNombreLugarById(1), lugar.getImgLugarById(1)
-                )
+                1
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 2,
                 "Almuerzo",
-                "07:00 - 10:00",
+                "11:00 - 14:00",
                 false,
                 8,
-                LugarEntity(
-                    1, lugar.getNombreLugarById(1), lugar.getImgLugarById(1)
-                )
+                1
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 3,
                 "Merienda",
-                "07:00 - 10:00",
+                "16:00 - 19:00",
                 false,
                 8,
-                LugarEntity(
-                    1, lugar.getNombreLugarById(1), lugar.getImgLugarById(1)
-                )
+                1
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 4,
                 "Cena",
-                "07:00 - 10:00",
+                "20:00 - 23:00",
                 false,
                 8,
-                LugarEntity(
-                    1, lugar.getNombreLugarById(1), lugar.getImgLugarById(1)
-                )
+                1
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 5,
                 "Karaoke",
-                "07:00 - 10:00",
+                "23:00 - 02:00",
                 false,
-                8,
-                LugarEntity(
-                    2, lugar.getNombreLugarById(2), lugar.getImgLugarById(2)
-                )
+                7,
+                2
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 6,
                 "StandUp",
-                "07:00 - 10:00",
+                "22:00 - 00:00",
                 false,
-                8,
-                LugarEntity(
-                    2, lugar.getNombreLugarById(2), lugar.getImgLugarById(2)
-                )
+                6,
+                2
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 7,
                 "Bingo",
-                "07:00 - 10:00",
+                "14:00 - 16:00",
                 false,
-                8,
-                LugarEntity(
-                    2, lugar.getNombreLugarById(2), lugar.getImgLugarById(2)
-                )
+                1,
+                2
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 8,
                 "Lifting",
-                "07:00 - 10:00",
+                "11:00 - 19:00",
                 false,
-                8,
-                LugarEntity(
-                    3, lugar.getNombreLugarById(3), lugar.getImgLugarById(3)
-                )
+                9,
+                3
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 9,
                 "Crossfit",
-                "07:00 - 10:00",
+                "15:00 - 16:00",
                 false,
-                8,
-                LugarEntity(
-                    3, lugar.getNombreLugarById(3), lugar.getImgLugarById(3)
-                )
+                3,
+                3
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 10,
                 "Zumba",
-                "07:00 - 10:00",
+                "18:00 - 19:00",
                 false,
-                8,
-                LugarEntity(
-                    3, lugar.getNombreLugarById(3), lugar.getImgLugarById(3)
-                )
+                5,
+                3
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 11,
                 "Pileta Libre",
-                "07:00 - 10:00",
+                "13:00 - 18:00",
                 false,
-                8,
-                LugarEntity(
-                    4, lugar.getNombreLugarById(4), lugar.getImgLugarById(4)
-                )
+                9,
+                4
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 12,
                 "AquaGym",
-                "07:00 - 10:00",
+                "09:00 - 11:00",
                 false,
-                8,
-                LugarEntity(
-                    4, lugar.getNombreLugarById(4), lugar.getImgLugarById(4)
-                )
+                3,
+                4
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 13,
                 "Masajes",
-                "07:00 - 10:00",
+                "10:00 - 12:00",
                 false,
-                8,
-                LugarEntity(
-                    5, lugar.getNombreLugarById(5), lugar.getImgLugarById(5)
-                )
+                2,
+                5
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 14,
                 "Circuito",
-                "07:00 - 10:00",
+                "10:00 - 11:00",
                 false,
-                8,
-                LugarEntity(
-                    5, lugar.getNombreLugarById(5), lugar.getImgLugarById(5)
-                )
+                6,
+                5
             )
         )
         database.actividadDao().save(
             ActividadEntity(
                 15,
                 "Relajación",
-                "07:00 - 10:00",
+                "10:00 - 11:00",
                 false,
-                8,
-                LugarEntity(
-                    5, lugar.getNombreLugarById(5), lugar.getImgLugarById(5)
-                )
+                7,
+                5
             )
         )
     }
+     */
+
 }
