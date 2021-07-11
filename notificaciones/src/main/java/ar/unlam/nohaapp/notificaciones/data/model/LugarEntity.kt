@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.notificaciones.data
+package ar.unlam.nohaapp.notificaciones.data.model
 
 import androidx.annotation.DrawableRes
 import androidx.room.ColumnInfo

@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.model
+package ar.unlam.nohaapp.data.model
 
 data class Weather (
     var weather: List<WeatherInfo>,
@@ -6,10 +6,10 @@ data class Weather (
     )
 
 data class WeatherInfo(
-    val description: String,
-    val icon:String,
+    var description: String,
+    var icon:String,
 )
 
 data class WeatherMain(
-    val temp:String
+    var temp:String?
 )

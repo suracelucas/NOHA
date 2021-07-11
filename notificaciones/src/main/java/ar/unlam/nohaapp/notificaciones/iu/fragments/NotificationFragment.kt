@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.notificaciones.fragments
+package ar.unlam.nohaapp.notificaciones.iu.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import androidx.fragment.app.Fragment
-import ar.unlam.nohaapp.notificaciones.adapters.NotificacionesListAdapter
-import ar.unlam.nohaapp.notificaciones.data.*
+import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
+import ar.unlam.nohaapp.notificaciones.data.model.DatabaseProvider
+import ar.unlam.nohaapp.notificaciones.data.model.LugaresConActividadesEntity
 import ar.unlam.nohaapp.notificaciones.databinding.FragmentNotificationBinding
+import ar.unlam.nohaapp.notificaciones.iu.adapters.NotificacionesListAdapter
 
 class NotificationFragment : Fragment() {
     private lateinit var notificacionesBinding: FragmentNotificationBinding

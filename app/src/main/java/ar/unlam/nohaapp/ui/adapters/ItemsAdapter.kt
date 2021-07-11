@@ -1,9 +1,9 @@
-package ar.unlam.nohaapp.adapters
+package ar.unlam.nohaapp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ar.unlam.nohaapp.ItemModel
+import ar.unlam.nohaapp.data.model.ItemModel
 import ar.unlam.nohaapp.databinding.ItemNovedadBinding
 
 class ItemsAdapter(

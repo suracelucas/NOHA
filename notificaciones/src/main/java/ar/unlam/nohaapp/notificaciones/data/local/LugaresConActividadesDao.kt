@@ -1,8 +1,9 @@
-package ar.unlam.nohaapp.notificaciones.data
+package ar.unlam.nohaapp.notificaciones.data.local
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import ar.unlam.nohaapp.notificaciones.data.model.LugaresConActividadesEntity
 
 @Dao
 interface LugaresConActividadesDao {
