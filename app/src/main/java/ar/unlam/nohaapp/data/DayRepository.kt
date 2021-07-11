@@ -1,11 +1,10 @@
 package ar.unlam.nohaapp.data
 
 import ar.unlam.nohaapp.R
-import java.util.*
 
-class DayRepository {
+class DayRepository(private var dia: Int) {
 
-    private var dia = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+    //private var dia = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
 
     fun getDay(): Int {
         return when (dia) {

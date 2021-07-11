@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.data.Datasource
 import ar.unlam.nohaapp.databinding.FragmentHomeBinding
 import ar.unlam.nohaapp.ui.adapters.ItemsAdapter
 import ar.unlam.nohaapp.ui.viewmodel.HomeFragmentViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 private lateinit var homeBinding: FragmentHomeBinding
 
 class HomeFragment : Fragment() {
-    private val homeFragmentViewModel : HomeFragmentViewModel by viewModels()
+    private val homeFragmentViewModel : HomeFragmentViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         homeBinding = FragmentHomeBinding.inflate(LayoutInflater.from(context))
         super.onCreate(savedInstanceState)

@@ -9,13 +9,13 @@ import ar.unlam.nohaapp.domain.GetWeather
 import ar.unlam.nohaapp.ui.adapters.ItemsAdapter
 import kotlinx.coroutines.launch
 
-class HomeFragmentViewModel : ViewModel() {
+class HomeFragmentViewModel (var getWeather: GetWeather, var getDay: GetDay): ViewModel() {
     val clima = MutableLiveData<Weather>()
     val dia : MutableLiveData<Int> by lazy{
         MutableLiveData<Int>()
     }
-    var getWeather = GetWeather()
-    var getDay = GetDay()
+    //var getWeather = GetWeather()
+    //var getDay = GetDay()
     fun onCreate(){
       viewModelScope.launch {
          val result = getWeather()
