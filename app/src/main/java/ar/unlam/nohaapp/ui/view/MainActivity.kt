@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.room.Room
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
-import ar.unlam.nohaapp.ui.view.HomeFragment
-import ar.unlam.nohaapp.notificaciones.data.ActividadEntity
-import ar.unlam.nohaapp.notificaciones.data.LugarEntity
-import ar.unlam.nohaapp.notificaciones.data.RoomNohaDB
-import ar.unlam.nohaapp.notificaciones.data.*
-import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
+import ar.unlam.nohaapp.notificaciones.data.model.DatabaseProvider
+import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
+import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -21,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val provider = DatabaseProvider()
         database = provider.getInstanceDatabase(this)
+        //resetDatabase()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -44,8 +41,8 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
 
-    /*
-    private fun resetDatabase() {
+
+    /*private fun resetDatabase() {
         database.clearAllTables()
         insertLugarData()
         insertActividadData()
@@ -216,6 +213,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
     }
-     */
+*/
 
 }

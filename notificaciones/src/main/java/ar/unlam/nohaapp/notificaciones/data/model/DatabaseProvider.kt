@@ -1,7 +1,8 @@
-package ar.unlam.nohaapp.notificaciones.data
+package ar.unlam.nohaapp.notificaciones.data.model
 
 import android.content.Context
 import androidx.room.Room
+import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 
 class DatabaseProvider {
     fun getInstanceDatabase(context: Context): RoomNohaDB {

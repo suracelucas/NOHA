@@ -14,22 +14,13 @@ import ar.unlam.nohaapp.ui.viewmodel.HomeFragmentViewModel
 
 private lateinit var homeBinding: FragmentHomeBinding
 
-
 class HomeFragment : Fragment() {
     private val homeFragmentViewModel : HomeFragmentViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         homeBinding = FragmentHomeBinding.inflate(LayoutInflater.from(context))
         super.onCreate(savedInstanceState)
-        setUpView()
         homeFragmentViewModel.onCreate()
-        homeFragmentViewModel.clima.observe(this, androidx.lifecycle.Observer { clima->
-            homeBinding.temperature.text = clima.main.temp
-            homeBinding.weatherImage.setImageResource(getResourceId(clima.weather[0].icon))
-            homeBinding.description.text = clima.weather[0].description
-        })
-        homeFragmentViewModel.dia.observe(this, androidx.lifecycle.Observer { dia->
-            homeBinding.diaSemana.text = getString(dia)
-        })
+        setUpView()
     }
 
     private fun getResourceId(name:String):Int{
@@ -48,8 +39,15 @@ class HomeFragment : Fragment() {
             else -> R.drawable._9d
         }
     }
-
     private fun setUpView() {
+        homeFragmentViewModel.clima.observe(this, androidx.lifecycle.Observer { clima->
+            homeBinding.temperature.text = "${clima.main?.temp}°"
+            homeBinding.weatherImage.setImageResource(getResourceId(clima.weather!![0].icon))
+            homeBinding.description.text = clima.weather!![0].description
+        })
+        homeFragmentViewModel.dia.observe(this, androidx.lifecycle.Observer { dia->
+            homeBinding.diaSemana.text = getString(dia)
+        })
         if(!homeFragmentViewModel.conContenido){
             val myDataSet = Datasource().loadAffirmations()
             homeFragmentViewModel.actividades = ItemsAdapter(myDataSet)
@@ -69,9 +67,6 @@ class HomeFragment : Fragment() {
                         homeBinding.temperature.text = "${this.main.temp}°"
         * */
     }
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

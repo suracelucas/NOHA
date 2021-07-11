@@ -1,4 +1,4 @@
-package ar.unlam.nohaapp.notificaciones.adapters
+package ar.unlam.nohaapp.notificaciones.iu.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,8 +8,9 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import android.widget.Toast
 import ar.unlam.nohaapp.notificaciones.R
-import ar.unlam.nohaapp.notificaciones.data.*
-import ar.unlam.nohaapp.notificaciones.fragments.NotificationFragment
+import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
+import ar.unlam.nohaapp.notificaciones.data.model.LugaresConActividadesEntity
+import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class NotificacionesListAdapter internal constructor(

@@ -11,5 +11,5 @@ data class WeatherInfo(
 )
 
 data class WeatherMain(
-    var temp:String
+    var temp:String?
 )

@@ -5,6 +5,5 @@ import ar.unlam.nohaapp.data.model.Weather
 
 class GetWeather {
     private val repository = ApiRepository()
-
     suspend operator fun invoke():Weather = repository.getWeather()
 }

@@ -6,7 +6,6 @@ import java.util.*
 class DayRepository {
 
     private var dia = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-    private var diaAnterior = dia
 
     fun getDay(): Int {
         return when (dia) {
