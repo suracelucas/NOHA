@@ -6,7 +6,7 @@ import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 
 @Database(
-    version = 2,
+    version = 1,
     entities = [ActividadEntity::class, LugarEntity::class]
 )
 
