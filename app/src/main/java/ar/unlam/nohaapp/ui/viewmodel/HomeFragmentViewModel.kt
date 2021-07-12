@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import ar.unlam.nohaapp.data.model.Weather
 import ar.unlam.nohaapp.domain.GetDay
 import ar.unlam.nohaapp.domain.GetWeather
-import ar.unlam.nohaapp.ui.adapters.ItemsAdapter
 import kotlinx.coroutines.launch
 
 class HomeFragmentViewModel (var getWeather: GetWeather, var getDay: GetDay): ViewModel() {
@@ -24,11 +23,6 @@ class HomeFragmentViewModel (var getWeather: GetWeather, var getDay: GetDay): Vi
         val dayResult = getDay()
         dia.postValue(dayResult)
     }
-
-
-
-
-    lateinit var actividades : ItemsAdapter
 
     var conContenido = false;
 }
