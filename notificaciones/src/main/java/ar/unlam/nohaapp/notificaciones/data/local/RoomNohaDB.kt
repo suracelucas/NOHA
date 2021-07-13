@@ -14,4 +14,5 @@ abstract class RoomNohaDB : RoomDatabase() {
     abstract fun actividadDao(): ActividadDao
     abstract fun lugarDao(): LugarDao
     abstract fun actividadEnLugarDao(): LugaresConActividadesDao
+
 }

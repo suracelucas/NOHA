@@ -12,6 +12,7 @@ import ar.unlam.nohaapp.notificaciones.data.model.DatabaseProvider
 import ar.unlam.nohaapp.notificaciones.data.model.LugaresConActividadesEntity
 import ar.unlam.nohaapp.notificaciones.databinding.FragmentNotificationBinding
 import ar.unlam.nohaapp.notificaciones.iu.adapters.NotificacionesListAdapter
+import ar.unlam.nohaapp.notificaciones.iu.viewmodel.NotificationFragmentViewModel
 
 class NotificationFragment : Fragment() {
     private lateinit var notificacionesBinding: FragmentNotificationBinding
@@ -21,6 +22,7 @@ class NotificationFragment : Fragment() {
     private lateinit var database: RoomNohaDB
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val notificationFragmentViewModel : NotificationFragmentViewModel
         notificacionesBinding = FragmentNotificationBinding.inflate(LayoutInflater.from(context))
         val provider = DatabaseProvider()
         database = provider.getInstanceDatabase(requireContext())
