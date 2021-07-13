@@ -6,17 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
-import ar.unlam.nohaapp.notificaciones.data.model.DatabaseProvider
 import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    private lateinit var database: RoomNohaDB
+    private val database: RoomNohaDB by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
-        val provider = DatabaseProvider()
-        database = provider.getInstanceDatabase(this)
         //resetDatabase()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
