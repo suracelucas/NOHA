@@ -1,5 +1,6 @@
 package ar.unlam.nohaapp.ui.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
 import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
+import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
+import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 import org.koin.android.ext.android.inject
 
@@ -15,7 +18,11 @@ class MainActivity : AppCompatActivity() {
     private val database: RoomNohaDB by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
-        //resetDatabase()
+        val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("crearDB", true)){
+            resetDatabase()
+            sharedPreferences.edit().putBoolean("crearDB", false).commit()
+        }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -40,7 +47,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-    /*private fun resetDatabase() {
+
+    private fun resetDatabase() {
         database.clearAllTables()
         insertLugarData()
         insertActividadData()
@@ -211,6 +219,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
     }
-*/
+
 
 }
