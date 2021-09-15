@@ -1,9 +1,13 @@
 package ar.unlam.nohaapp.ui.view
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
@@ -16,10 +20,11 @@ import org.koin.android.ext.android.inject
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
+    private val CAMERA_REQUEST_CODE = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
-        if(sharedPreferences.getBoolean("crearDB", true)){
+        if (sharedPreferences.getBoolean("crearDB", true)) {
             resetDatabase()
             sharedPreferences.edit().putBoolean("crearDB", false).commit()
         }
@@ -38,6 +43,9 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
+        binding.btnCamera.setOnClickListener { checkCameraPermission() }
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =
@@ -45,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.fl_wrapper, fragment)
             commit()
         }
-
 
 
     private fun resetDatabase() {
@@ -218,6 +225,56 @@ class MainActivity : AppCompatActivity() {
                 5
             )
         )
+    }
+
+    //Función que ejecuta el botón de la camara para los permisos.
+    private fun checkCameraPermission() {
+        //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
+            requestCameraPermission()
+        } else {
+            //El permiso está aceptado.
+        }
+    }
+
+    private fun requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.CAMERA
+            )
+        ) {
+            //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
+        } else {
+            //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        //Hacemos un when por si tenemos que pedir más permisos
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
+                } else {
+                    //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
+                }
+                return
+            }
+            else -> {
+                // Por si sale algún otro permiso.
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
 
