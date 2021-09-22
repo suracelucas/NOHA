@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -17,12 +18,15 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
+import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
+    private var administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
     private val CAMERA_REQUEST_CODE = 0
+    private val GPS_REQUEST_CODE = 10
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
@@ -48,6 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
         binding.btnCamera.setOnClickListener { checkCameraPermission() }
+        //Pide permiso de GPS siempre que se abre la aplicación
+        checkGPSPermission()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =
@@ -242,6 +248,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //No sé si hay forma de no volver a pedir todo de nuevo y hacerlo más simple
+    //Función que se ejecuta al abrir la aplicación.
+    private fun checkGPSPermission() {
+        //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
+            requestGPSPermission()
+        } else {
+            //El permiso está aceptado.
+            pedirUbicacionGPS()
+        }
+    }
+
+    private fun requestGPSPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
+            //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
+            Toast.makeText(this, "Ir a ajustes para proporcionar permisos.", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), GPS_REQUEST_CODE
+            )
+        }
+    }
+
     private fun requestCameraPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
@@ -249,6 +288,8 @@ class MainActivity : AppCompatActivity() {
             )
         ) {
             //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
+            Toast.makeText(this, "Ir a ajustes para proporcionar permisos.", Toast.LENGTH_SHORT)
+                .show()
         } else {
             //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
             ActivityCompat.requestPermissions(
@@ -266,10 +307,30 @@ class MainActivity : AppCompatActivity() {
         //Hacemos un when por si tenemos que pedir más permisos
         when (requestCode) {
             CAMERA_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                //Supongo que hay otra forma mejor de verificarlo, ya que puedo tener varios permisos.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                            grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                ) {
                     //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
                 } else {
                     //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
+                    Toast.makeText(this, "No se puede acceder a la camara", Toast.LENGTH_SHORT)
+                }
+                return
+            }
+            GPS_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                            grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
+                    pedirUbicacionGPS()
+                } else {
+                    //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
+                    Toast.makeText(
+                        this,
+                        "No se podrá dar información de temperatura de su ciudad.",
+                        Toast.LENGTH_SHORT
+                    )
                 }
                 return
             }
@@ -278,6 +339,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    //Se supone que estoy pidiendo la ubicación, pero no sé si está bien hecho, tampoco la estoy usando
+    // ni llevando a ningún lado todavía.
+    //PD: No sé porque me pide que verifique el permiso, si lo estoy llamando después de verificar.
+    private fun pedirUbicacionGPS() {
+        administradorDeSensorGPS.lastLocation.addOnSuccessListener {
+            it.latitude
+            it.longitude
+        }
     }
 
 
