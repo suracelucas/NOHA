@@ -1,8 +1,10 @@
 package ar.unlam.nohaapp.ui.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +20,21 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
-    private var administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+
+    //Asignar valor en el OnCreate
+    private val administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+    //Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD
+    private var longitud = 0.0
+    private var latitud = 0.0
     private val CAMERA_REQUEST_CODE = 0
     private val GPS_REQUEST_CODE = 10
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +60,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
         binding.btnCamera.setOnClickListener { checkCameraPermission() }
         //Pide permiso de GPS siempre que se abre la aplicación
         checkGPSPermission()
+        //Pide la ubicación cada vez que arranca la aplicación
+        pedirUbicacionGPS()
     }
 
     private fun makeCurrentFragment(fragment: Fragment) =
@@ -307,9 +320,7 @@ class MainActivity : AppCompatActivity() {
         //Hacemos un when por si tenemos que pedir más permisos
         when (requestCode) {
             CAMERA_REQUEST_CODE -> {
-                //Supongo que hay otra forma mejor de verificarlo, ya que puedo tener varios permisos.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED ||
-                            grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
                     //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
                 } else {
@@ -319,8 +330,7 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             GPS_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED ||
-                            grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
                     //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
                     pedirUbicacionGPS()
@@ -344,12 +354,14 @@ class MainActivity : AppCompatActivity() {
     //Se supone que estoy pidiendo la ubicación, pero no sé si está bien hecho, tampoco la estoy usando
     // ni llevando a ningún lado todavía.
     //PD: No sé porque me pide que verifique el permiso, si lo estoy llamando después de verificar.
+
     private fun pedirUbicacionGPS() {
+        //Pedir permiso por si fue cancelado con anterioridad
+        checkGPSPermission()
         administradorDeSensorGPS.lastLocation.addOnSuccessListener {
-            it.latitude
-            it.longitude
+            latitud = it.latitude
+            longitud = it.longitude
         }
     }
-
 
 }
