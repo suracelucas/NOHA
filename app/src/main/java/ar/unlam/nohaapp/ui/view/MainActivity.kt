@@ -1,9 +1,20 @@
 package ar.unlam.nohaapp.ui.view
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.camera2.internal.annotation.CameraExecutor
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.ActivityMainBinding
@@ -11,11 +22,17 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
+import kotlinx.android.synthetic.main.fragment_camera.*
 import org.koin.android.ext.android.inject
+import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
@@ -28,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         val homeFragment = HomeFragment()
         val notificationFragment = NotificationFragment()
+        val cameraFragment = CameraFragment(this)
 
         makeCurrentFragment(homeFragment)
 
@@ -35,10 +53,14 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.Home -> makeCurrentFragment(homeFragment)
                 R.id.notificaciones -> makeCurrentFragment(notificationFragment)
+                R.id.camara -> makeCurrentFragment(cameraFragment)
             }
             true
         }
+
+
     }
+
 
     private fun makeCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
