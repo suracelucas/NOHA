@@ -3,16 +3,12 @@ package ar.unlam.nohaapp.ui.view
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.internal.annotation.CameraExecutor
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,30 +18,36 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
-import kotlinx.android.synthetic.main.fragment_camera.*
+import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
-import java.io.File
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
 
+    //Asignar valor en el OnCreate
+    //private val administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+    /*Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD*/
+    private var longitud = 0.0
+    private var latitud = 0.0
+    private val CAMERA_REQUEST_CODE = 0
+    private val GPS_REQUEST_CODE = 10
+    private lateinit var cameraFragment: CameraFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
-        if(sharedPreferences.getBoolean("crearDB", true)){
+        if (sharedPreferences.getBoolean("crearDB", true)) {
             resetDatabase()
-            sharedPreferences.edit().putBoolean("crearDB", false).commit()
+            sharedPreferences.edit().putBoolean("crearDB", false).apply()
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         val homeFragment = HomeFragment()
         val notificationFragment = NotificationFragment()
-        val cameraFragment = CameraFragment(this)
+        cameraFragment = CameraFragment(this)
 
         makeCurrentFragment(homeFragment)
 
@@ -53,12 +55,18 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.Home -> makeCurrentFragment(homeFragment)
                 R.id.notificaciones -> makeCurrentFragment(notificationFragment)
-                R.id.camara -> makeCurrentFragment(cameraFragment)
+                R.id.camara -> checkCameraPermission()
+                //R.id.camara -> makeCurrentFragment(cameraFragment)
             }
             true
         }
 
-
+        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
+        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
+        //Pide permiso de GPS siempre que se abre la aplicación
+        checkGPSPermission()
+        //Pide la ubicación cada vez que arranca la aplicación
+        pedirUbicacionGPS()
     }
 
 
@@ -67,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.fl_wrapper, fragment)
             commit()
         }
-
 
 
     private fun resetDatabase() {
@@ -242,5 +249,123 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    //Función que ejecuta el botón de la camara para los permisos.
+    private fun checkCameraPermission() {
+        //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
+            requestCameraPermission()
+        } else {
+            //El permiso está aceptado.
+            //Consultar a Kevin
+            makeCurrentFragment(cameraFragment)
+        }
+    }
+
+    /*No sé si hay forma de no volver a pedir todo de nuevo y hacerlo más simple*/
+    //Función que se ejecuta al abrir la aplicación.
+    private fun checkGPSPermission() {
+        //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
+            requestGPSPermission()
+        } else {
+            //El permiso está aceptado.
+            pedirUbicacionGPS()
+        }
+    }
+
+    private fun requestGPSPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        ) {
+            //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
+            Toast.makeText(this, "Ir a ajustes para proporcionar permisos.", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), GPS_REQUEST_CODE
+            )
+        }
+    }
+
+    private fun requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.CAMERA
+            )
+        ) {
+            //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
+            Toast.makeText(this, "Ir a ajustes para proporcionar permisos.", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE
+            )
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        //Hacemos un when por si tenemos que pedir más permisos
+        when (requestCode) {
+            CAMERA_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
+                    makeCurrentFragment(cameraFragment)
+                } else {
+                    //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
+                    Toast.makeText(this, "No se puede acceder a la camara", Toast.LENGTH_SHORT)
+                }
+                return
+            }
+            GPS_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
+                    pedirUbicacionGPS()
+                } else {
+                    //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
+                    Toast.makeText(
+                        this,
+                        "No se podrá dar información de temperatura de su ciudad.",
+                        Toast.LENGTH_SHORT
+                    )
+                }
+                return
+            }
+            else -> {
+                // Por si sale algún otro permiso.
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    //Se supone que estoy pidiendo la ubicación, pero no sé si está bien hecho, tampoco la estoy usando
+    // ni llevando a ningún lado todavía.
+    //PD: No sé porque me pide que verifique el permiso, si lo estoy llamando después de verificar.
+
+    private fun pedirUbicacionGPS() {
+        //Pedir permiso por si fue cancelado con anterioridad
+        checkGPSPermission()
+        /*administradorDeSensorGPS.lastLocation.addOnSuccessListener {
+            latitud = it.latitude
+            longitud = it.longitude
+        }*/
+    }
 
 }

@@ -32,18 +32,8 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cameraBinding = FragmentCameraBinding.inflate(LayoutInflater.from(context))
-
-// Se piden los permisos de la camara
-        if(allPermissionsGranted()){
-            startCamera()
-        } else {
-            ActivityCompat.requestPermissions(context,
-                CameraFragment.REQUIRED_PERMISSIONS,
-                CameraFragment.REQUEST_CODE_PERMISSIONS
-            )
-        }
-
-        // Crea el Thread para la camara
+        startCamera()
+        // Crea el Thread para la camara */
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -76,38 +66,16 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
         }, ContextCompat.getMainExecutor(context))
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all{
-        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera()
-            } else {
-                Toast.makeText(context,
-                    "Permisos no otorgados por el usuario.",
-                    Toast.LENGTH_SHORT).show()
-                //finish()
-            }
-        }
-    }
     // -> Fin, funciones de camara
 
     // <- Inicio, variables de camara
     companion object {
         private const val TAG = "CameraXBasic"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(android.Manifest.permission.CAMERA)
     }
     // -> Fin, variables de camara
 
