@@ -20,10 +20,7 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +28,8 @@ class MainActivity : AppCompatActivity() {
     private val database: RoomNohaDB by inject()
 
     //Asignar valor en el OnCreate
-    private val administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+    private lateinit var administradorDeSensorGPS: FusedLocationProviderClient
+
     //Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD
     private var longitud = 0.0
     private var latitud = 0.0
@@ -46,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
 
         val homeFragment = HomeFragment()
         val notificationFragment = NotificationFragment()
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
-        binding.btnCamera.setOnClickListener { checkCameraPermission() }
+        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
         //Pide permiso de GPS siempre que se abre la aplicación
         checkGPSPermission()
         //Pide la ubicación cada vez que arranca la aplicación
@@ -272,7 +272,6 @@ class MainActivity : AppCompatActivity() {
             requestGPSPermission()
         } else {
             //El permiso está aceptado.
-            pedirUbicacionGPS()
         }
     }
 
