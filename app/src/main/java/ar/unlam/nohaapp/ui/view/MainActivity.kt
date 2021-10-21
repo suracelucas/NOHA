@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -48,8 +49,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
+        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
+        //Pide permiso de GPS siempre que se abre la aplicación
+        checkGPSPermission()
+        //Pide la ubicación cada vez que arranca la aplicación
+        pedirUbicacionGPS()
 
-        val homeFragment = HomeFragment()
+        val homeFragment = HomeFragment(latitud, longitud)
         val notificationFragment = NotificationFragment()
         cameraFragment = CameraFragment(this)
 
@@ -64,13 +71,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
-        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
-        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
-        //Pide permiso de GPS siempre que se abre la aplicación
-        checkGPSPermission()
-        //Pide la ubicación cada vez que arranca la aplicación
-        pedirUbicacionGPS()
     }
 
 
