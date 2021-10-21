@@ -19,6 +19,7 @@ import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import org.koin.android.ext.android.inject
 
 
@@ -27,8 +28,9 @@ class MainActivity : AppCompatActivity() {
     private val database: RoomNohaDB by inject()
 
     //Asignar valor en el OnCreate
-    //private val administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
-    /*Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD*/
+    private lateinit var administradorDeSensorGPS: FusedLocationProviderClient
+
+    //Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD
     private var longitud = 0.0
     private var latitud = 0.0
     private val CAMERA_REQUEST_CODE = 0
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
 
         val homeFragment = HomeFragment()
         val notificationFragment = NotificationFragment()
@@ -275,7 +279,6 @@ class MainActivity : AppCompatActivity() {
             requestGPSPermission()
         } else {
             //El permiso está aceptado.
-            pedirUbicacionGPS()
         }
     }
 
@@ -362,10 +365,10 @@ class MainActivity : AppCompatActivity() {
     private fun pedirUbicacionGPS() {
         //Pedir permiso por si fue cancelado con anterioridad
         checkGPSPermission()
-        /*administradorDeSensorGPS.lastLocation.addOnSuccessListener {
+        administradorDeSensorGPS.lastLocation.addOnSuccessListener {
             latitud = it.latitude
             longitud = it.longitude
-        }*/
+        }
     }
 
 }
