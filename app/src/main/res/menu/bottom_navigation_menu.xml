@@ -10,4 +10,10 @@
         android:enabled="true"
         android:icon="@drawable/ic_notificaciones"
         android:title="@string/notificaciones"/>
+
+    <item
+        android:id="@+id/camara"
+        android:enabled="true"
+        android:icon="@drawable/ic_camera"
+        android:title="@string/camera"/>
 </menu>

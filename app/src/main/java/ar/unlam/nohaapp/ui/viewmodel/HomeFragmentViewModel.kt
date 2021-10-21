@@ -17,9 +17,9 @@ class HomeFragmentViewModel (var getWeather: GetWeather, var getDay: GetDay, val
     }
     val listaActividades = MutableLiveData<List<ActividadEntity>>()
 
-    fun onCreate(){
+    fun onCreate(latitud :Double, longitud: Double){
       viewModelScope.launch {
-         val result = getWeather()
+         val result = getWeather(latitud, longitud)
           clima.postValue(result)
       }
         val dayResult = getDay()

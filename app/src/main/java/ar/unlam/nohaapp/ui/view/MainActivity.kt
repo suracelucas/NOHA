@@ -1,12 +1,11 @@
 package ar.unlam.nohaapp.ui.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -20,8 +19,10 @@ import ar.unlam.nohaapp.notificaciones.data.local.RoomNohaDB
 import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.*
 import org.koin.android.ext.android.inject
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -35,20 +36,29 @@ class MainActivity : AppCompatActivity() {
     private var latitud = 0.0
     private val CAMERA_REQUEST_CODE = 0
     private val GPS_REQUEST_CODE = 10
+    private lateinit var cameraFragment: CameraFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         val sharedPreferences = getSharedPreferences("my_settings", Context.MODE_PRIVATE)
         if (sharedPreferences.getBoolean("crearDB", true)) {
             resetDatabase()
-            sharedPreferences.edit().putBoolean("crearDB", false).commit()
+            sharedPreferences.edit().putBoolean("crearDB", false).apply()
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
+        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
+        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
+        //Pide permiso de GPS siempre que se abre la aplicación
+        checkGPSPermission()
+        //Pide la ubicación cada vez que arranca la aplicación
+        pedirUbicacionGPS()
 
-        val homeFragment = HomeFragment()
+        val homeFragment = HomeFragment(latitud, longitud)
         val notificationFragment = NotificationFragment()
+        cameraFragment = CameraFragment(this)
 
         makeCurrentFragment(homeFragment)
 
@@ -56,18 +66,13 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.Home -> makeCurrentFragment(homeFragment)
                 R.id.notificaciones -> makeCurrentFragment(notificationFragment)
+                R.id.camara -> checkCameraPermission()
+                //R.id.camara -> makeCurrentFragment(cameraFragment)
             }
             true
         }
-
-
-        //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
-        //binding.btnCamera.setOnClickListener { checkCameraPermission() }
-        //Pide permiso de GPS siempre que se abre la aplicación
-        checkGPSPermission()
-        //Pide la ubicación cada vez que arranca la aplicación
-        pedirUbicacionGPS()
     }
+
 
     private fun makeCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
@@ -258,10 +263,12 @@ class MainActivity : AppCompatActivity() {
             requestCameraPermission()
         } else {
             //El permiso está aceptado.
+            //Consultar a Kevin
+            makeCurrentFragment(cameraFragment)
         }
     }
 
-    //No sé si hay forma de no volver a pedir todo de nuevo y hacerlo más simple
+    /*No sé si hay forma de no volver a pedir todo de nuevo y hacerlo más simple*/
     //Función que se ejecuta al abrir la aplicación.
     private fun checkGPSPermission() {
         //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
@@ -322,6 +329,7 @@ class MainActivity : AppCompatActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
                     //Se acepto el permiso, podemos lanzar la funcionalidad desde acá.
+                    makeCurrentFragment(cameraFragment)
                 } else {
                     //Se rechazo el permiso, podemos desactivar la funcionalidad o mostrar un dialogo.
                     Toast.makeText(this, "No se puede acceder a la camara", Toast.LENGTH_SHORT)

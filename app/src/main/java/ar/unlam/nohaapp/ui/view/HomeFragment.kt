@@ -17,13 +17,13 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 private lateinit var homeBinding: FragmentHomeBinding
 
-class HomeFragment() : Fragment() {
+class HomeFragment(private val latitud: Double, private val longitud:Double) : Fragment() {
     private val database : RoomNohaDB by inject()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         homeBinding = FragmentHomeBinding.inflate(LayoutInflater.from(context))
         super.onCreate(savedInstanceState)
-        homeFragmentViewModel.onCreate()
+        homeFragmentViewModel.onCreate(latitud, longitud)
     }
 
     private fun getResourceId(name: String): Int {
