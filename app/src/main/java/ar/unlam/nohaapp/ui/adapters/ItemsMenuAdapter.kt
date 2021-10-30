@@ -1,14 +1,21 @@
 package ar.unlam.nohaapp.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ar.unlam.nohaapp.data.ItemMenu
 import ar.unlam.nohaapp.databinding.ItemMenuBinding
 
-class ItemsMenuAdapter(private val items: List<ItemMenu>) :
-    RecyclerView.Adapter<ItemMenuViewHolder>() {
+class ItemsMenuAdapter(
+    private val items: List<ItemMenu>,
+    private val itemClickListener: OnButtonClickListener
+) :
+    RecyclerView.Adapter<ItemsMenuAdapter.ItemMenuViewHolder>() {
+
+    interface OnButtonClickListener {
+        fun onPlusClick(item: ItemMenu)
+        fun onLessClick(item: ItemMenu)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemMenuViewHolder {
         val binding = ItemMenuBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,35 +30,27 @@ class ItemsMenuAdapter(private val items: List<ItemMenu>) :
         return items.size
     }
 
-}
 
-class ItemMenuViewHolder(private val binding: ItemMenuBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    fun bindItem(itemModel: ItemMenu) {
-        binding.itemNameTv.text = itemModel.nombre
-        binding.itemPriceTv.text = "$${itemModel.precio}"
-        sumarPrecio(itemModel)
-        restarPrecio(itemModel)
-    }
+    inner class ItemMenuViewHolder(private val binding: ItemMenuBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    fun sumarPrecio(itemModel: ItemMenu) {
-        val btn = binding.plusBtn
-        var itemCount = binding.itemCountTv
-        btn.setOnClickListener {
-            val value = itemModel.precio
-            binding.compra.text = value.toString()
-            binding.itemCountTv.text = itemCount.text
-        }
-    }
-
-    fun restarPrecio(itemModel: ItemMenu) {
-        val btn = binding.lessBtn
-        var itemCount = binding.itemCountTv
-        btn.setOnClickListener {
-            val value = itemModel.precio
-            binding.compra.text = value.toString()
-            itemCount.text
-            binding.itemCountTv.text = itemCount.text
+        fun bindItem(item: ItemMenu) {
+            binding.plusBtn.setOnClickListener {
+                itemClickListener.onPlusClick(item)
+                val tvValue = binding.itemCountTv.text
+                val tvValueNum = Integer.valueOf(tvValue.toString()).inc()
+                binding.itemCountTv.text = tvValueNum.toString()
+            }
+            binding.lessBtn.setOnClickListener {
+                itemClickListener.onLessClick(item)
+                val tvValue = binding.itemCountTv.text
+                val tvValueNum = Integer.valueOf(tvValue.toString()).dec()
+                if (!tvValue.equals("0")) {
+                    binding.itemCountTv.text = tvValueNum.toString()
+                }
+            }
+            binding.itemNameTv.text = item.nombre
+            binding.itemPriceTv.text = "$${item.precio}"
         }
     }
 }

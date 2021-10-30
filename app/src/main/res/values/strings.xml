@@ -18,7 +18,9 @@
     <string name="item_count">0</string>
     <string name="less">-</string>
     <string name="plus">+</string>
-    <string name="compra">0</string>
+    <string name="compra">$0</string>
     <string name="pagar">Pagar</string>
     <string name="total">Total:</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="habitacion">Habitación</string>
 </resources>

@@ -2,31 +2,67 @@ package ar.unlam.nohaapp.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import ar.unlam.nohaapp.R
+import ar.unlam.nohaapp.data.ItemMenu
 import ar.unlam.nohaapp.data.ItemsMenuList
-import ar.unlam.nohaapp.databinding.ActivityMainBinding
 import ar.unlam.nohaapp.databinding.ActivityMenuBinding
 import ar.unlam.nohaapp.ui.adapters.ItemsMenuAdapter
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener {
     private lateinit var binding: ActivityMenuBinding
+    private lateinit var itemsTotales: MutableList<ItemMenu>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMenuBinding.inflate(LayoutInflater.from(this))
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        binding.itemMenuRw.adapter = ItemsMenuAdapter(ItemsMenuList().loadItemsMenu())
-        binding.itemMenuRw.layoutManager = LinearLayoutManager(this)
-
-
+        setupRecyclerView()
+        itemsTotales = mutableListOf()
+        codigoHabitacion()
     }
 
+    private fun setupRecyclerView() {
+        binding.itemMenuRw.layoutManager = LinearLayoutManager(this)
+        binding.itemMenuRw.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        binding.itemMenuRw.adapter = ItemsMenuAdapter(ItemsMenuList().loadItemsMenu(), this)
+    }
+
+    override fun onPlusClick(item: ItemMenu) {
+        itemsTotales.add(item)
+        calcularTotal()
+    }
+
+    override fun onLessClick(item: ItemMenu) {
+        if (itemsTotales.isNotEmpty()) {
+            itemsTotales.remove(item)
+        }
+        calcularTotal()
+    }
+
+    private fun calcularTotal() {
+        var precioTotal = 0
+        for (item in itemsTotales) {
+            precioTotal += item.precio.toShort()
+        }
+        binding.compra.text = "$${precioTotal}"
+    }
+
+
+    fun codigoHabitacion() {
+        binding.habitacion.text = "Pedido para habitación ###" // ${codigoQR.getHabitacion()}
+    }
+
+    /*
+    fun pagar(){
+        binding.pay.setOnClickListener{
+        }
+    }
+     */
 }
