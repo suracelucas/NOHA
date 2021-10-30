@@ -1,11 +1,14 @@
 package ar.unlam.nohaapp.domain
 
+import android.content.Intent
 import android.media.Image
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.core.content.ContextCompat.startActivity
 import ar.unlam.nohaapp.ui.view.MainActivity
+import ar.unlam.nohaapp.ui.view.MenuActivity
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -28,7 +31,7 @@ class QRCodeAnalyzer(private val context : MainActivity) : ImageAnalysis.Analyze
                     val corners = barcode.cornerPoints
                     val rawValue = barcode.rawValue
                     Log.i("BARCODE_SCANNER", "El contenido es: $rawValue")
-                    Toast.makeText(context, "El contenido es: $rawValue", Toast.LENGTH_LONG).show()
+                    Intent(context, MenuActivity::class.java)
                     when(barcode.valueType){
                         Barcode.TYPE_TEXT ->{
                             val text = barcode.displayValue!!
