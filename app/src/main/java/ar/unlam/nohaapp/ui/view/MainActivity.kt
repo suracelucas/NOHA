@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private val CAMERA_REQUEST_CODE = 0
     private val GPS_REQUEST_CODE = 10
     private lateinit var cameraFragment: CameraFragment
+    private lateinit var homeFragment: HomeFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -55,12 +57,10 @@ class MainActivity : AppCompatActivity() {
         checkGPSPermission()
         //Pide la ubicación cada vez que arranca la aplicación
         pedirUbicacionGPS()
-
-        val homeFragment = HomeFragment(latitud, longitud)
         val notificationFragment = NotificationFragment()
         cameraFragment = CameraFragment(this)
 
-        makeCurrentFragment(homeFragment)
+        //makeCurrentFragment(homeFragment)
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkGPSPermission() {
         //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
+            != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
             //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
             requestGPSPermission()
@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity() {
             //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), GPS_REQUEST_CODE
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), GPS_REQUEST_CODE
             )
         }
     }
@@ -365,10 +365,20 @@ class MainActivity : AppCompatActivity() {
     private fun pedirUbicacionGPS() {
         //Pedir permiso por si fue cancelado con anterioridad
         checkGPSPermission()
-        administradorDeSensorGPS.lastLocation.addOnSuccessListener {
-            latitud = it.latitude
-            longitud = it.longitude
+        val solicitudDatosGPS = LocationRequest.create().apply { interval = 300000
+        fastestInterval = 200000
+            priority = LocationRequest.PRIORITY_LOW_POWER
         }
+        administradorDeSensorGPS.requestLocationUpdates(solicitudDatosGPS, object : LocationCallback(){
+            override fun onLocationResult(location: LocationResult?) {
+                latitud = location?.lastLocation?.latitude ?: 0.0
+                longitud = location?.lastLocation?.longitude ?: 0.0
+                homeFragment = HomeFragment(latitud, longitud)
+                makeCurrentFragment(homeFragment)
+            }
+        }, Looper.getMainLooper())
+
+
     }
 
 }

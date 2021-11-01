@@ -37,7 +37,6 @@ class QRCodeAnalyzer(private val context : MainActivity) : ImageAnalysis.Analyze
                             val title = barcode.url!!.title
                             val url = barcode.url!!.url
                         }
-
                     }
 
                 }
