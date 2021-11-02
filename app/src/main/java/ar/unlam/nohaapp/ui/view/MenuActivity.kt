@@ -13,6 +13,7 @@ import ar.unlam.nohaapp.ui.adapters.ItemsMenuAdapter
 class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener {
     private lateinit var binding: ActivityMenuBinding
     private lateinit var itemsTotales: MutableList<ItemMenu>
+    private lateinit var resultado : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMenuBinding.inflate(LayoutInflater.from(this))
@@ -21,6 +22,8 @@ class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener
         setupRecyclerView()
         itemsTotales = mutableListOf()
         codigoHabitacion()
+
+        resultado = intent.getStringExtra("resultado").toString()
     }
 
     private fun setupRecyclerView() {
@@ -56,7 +59,7 @@ class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener
 
 
     fun codigoHabitacion() {
-        binding.habitacion.text = "Pedido para habitación ###" // ${codigoQR.getHabitacion()}
+        binding.habitacion.text = "Pedido para habitación ###${resultado}"
     }
 
     /*

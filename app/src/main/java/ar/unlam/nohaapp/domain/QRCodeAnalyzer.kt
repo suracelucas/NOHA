@@ -1,7 +1,6 @@
 package ar.unlam.nohaapp.domain
 
 import android.content.Intent
-import android.media.Image
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
@@ -31,7 +30,7 @@ class QRCodeAnalyzer(private val context : MainActivity) : ImageAnalysis.Analyze
                     val corners = barcode.cornerPoints
                     val rawValue = barcode.rawValue
                     Log.i("BARCODE_SCANNER", "El contenido es: $rawValue")
-                    Intent(context, MenuActivity::class.java)
+
                     when(barcode.valueType){
                         Barcode.TYPE_TEXT ->{
                             val text = barcode.displayValue!!
@@ -41,7 +40,10 @@ class QRCodeAnalyzer(private val context : MainActivity) : ImageAnalysis.Analyze
                             val url = barcode.url!!.url
                         }
                     }
-
+                    val intent = Intent(context, MenuActivity::class.java).apply {
+                        putExtra("resultado", rawValue)
+                    }
+                    //startActivity(context, intent, null)
                 }
 
             }
