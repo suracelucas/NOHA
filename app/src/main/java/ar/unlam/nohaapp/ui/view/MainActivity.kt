@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         //Pide la ubicación cada vez que arranca la aplicación
         pedirUbicacionGPS()
         val notificationFragment = NotificationFragment()
-        val homeFragment = HomeFragment(latitud, longitud)
         cameraFragment = CameraFragment(this)
 
         //makeCurrentFragment(homeFragment)
