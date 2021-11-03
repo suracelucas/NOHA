@@ -53,11 +53,10 @@ class MainActivity : AppCompatActivity() {
         administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
         //binding.btnCamera.setOnClickListener { checkCameraPermission() }
-        //Pide permiso de GPS siempre que se abre la aplicación
-        checkGPSPermission()
         //Pide la ubicación cada vez que arranca la aplicación
         pedirUbicacionGPS()
         val notificationFragment = NotificationFragment()
+        val homeFragment = HomeFragment(latitud, longitud)
         cameraFragment = CameraFragment(this)
 
         //makeCurrentFragment(homeFragment)
@@ -272,9 +271,8 @@ class MainActivity : AppCompatActivity() {
     //Función que se ejecuta al abrir la aplicación.
     private fun checkGPSPermission() {
         //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
             //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
             requestGPSPermission()
         } else {
@@ -285,7 +283,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestGPSPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
         ) {
             //Ya se rechazo el permiso anteriormente, debe irse a ajustes.
@@ -295,7 +293,7 @@ class MainActivity : AppCompatActivity() {
             //Nunca acepto ni rechazo, pedimos el permiso con la función requestPermissions
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), GPS_REQUEST_CODE
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), GPS_REQUEST_CODE
             )
         }
     }
@@ -357,10 +355,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
-    //Se supone que estoy pidiendo la ubicación, pero no sé si está bien hecho, tampoco la estoy usando
-    // ni llevando a ningún lado todavía.
-    //PD: No sé porque me pide que verifique el permiso, si lo estoy llamando después de verificar.
 
     private fun pedirUbicacionGPS() {
         //Pedir permiso por si fue cancelado con anterioridad
