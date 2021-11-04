@@ -5,25 +5,24 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import ar.unlam.nohaapp.data.ItemMenu
+import ar.unlam.nohaapp.data.model.ItemMenu
 import ar.unlam.nohaapp.data.ItemsMenuList
 import ar.unlam.nohaapp.databinding.ActivityMenuBinding
+import ar.unlam.nohaapp.domain.RESULTADO
 import ar.unlam.nohaapp.ui.adapters.ItemsMenuAdapter
 
 class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener {
     private lateinit var binding: ActivityMenuBinding
     private lateinit var itemsTotales: MutableList<ItemMenu>
-    private lateinit var resultado : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMenuBinding.inflate(LayoutInflater.from(this))
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val resultado = intent.getStringExtra(RESULTADO).toString()
         setupRecyclerView()
         itemsTotales = mutableListOf()
-        codigoHabitacion()
-
-        resultado = intent.getStringExtra("resultado").toString()
+        codigoHabitacion(resultado)
     }
 
     private fun setupRecyclerView() {
@@ -58,7 +57,7 @@ class MenuActivity : AppCompatActivity(), ItemsMenuAdapter.OnButtonClickListener
     }
 
 
-    fun codigoHabitacion() {
+    fun codigoHabitacion(resultado :String) {
         binding.habitacion.text = "Pedido para habitación ###${resultado}"
     }
 
