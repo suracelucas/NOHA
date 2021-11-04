@@ -3,11 +3,16 @@ package ar.unlam.nohaapp.ui.view
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,17 +27,17 @@ import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.android.ext.android.inject
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SensorEventListener {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
 
-    //Asignar valor en el OnCreate
     private lateinit var administradorDeSensorGPS: FusedLocationProviderClient
-
-    //Valores de ubicación, hay que pasarlos a la API y ver si funciona todo o se rompe xD
+    private lateinit var administradorSensor: SensorManager
+    private lateinit var barraMovimiento: BottomNavigationView
     private var longitud = 0.0
     private var latitud = 0.0
     private val CAMERA_REQUEST_CODE = 0
@@ -49,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        barraMovimiento = binding.accelerate
+        configurarSensor()
 
         administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
@@ -70,7 +78,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
-
 
     private fun makeCurrentFragment(fragment: Fragment) =
         supportFragmentManager.beginTransaction().apply {
@@ -271,7 +278,8 @@ class MainActivity : AppCompatActivity() {
     private fun checkGPSPermission() {
         //ContextCompat.checkSelfPermission verifica si un permiso está aceptado o no
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             //El permiso no está aceptado, así que hay que comprobar si el permiso no fue pedido antes y rechazado.
             requestGPSPermission()
         } else {
@@ -358,20 +366,57 @@ class MainActivity : AppCompatActivity() {
     private fun pedirUbicacionGPS() {
         //Pedir permiso por si fue cancelado con anterioridad
         checkGPSPermission()
-        val solicitudDatosGPS = LocationRequest.create().apply { interval = 300000
-        fastestInterval = 200000
+        val solicitudDatosGPS = LocationRequest.create().apply {
+            interval = 300000
+            fastestInterval = 200000
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
-        administradorDeSensorGPS.requestLocationUpdates(solicitudDatosGPS, object : LocationCallback(){
-            override fun onLocationResult(location: LocationResult?) {
-                latitud = location?.lastLocation?.latitude ?: 0.0
-                longitud = location?.lastLocation?.longitude ?: 0.0
-                homeFragment = HomeFragment(latitud, longitud)
-                makeCurrentFragment(homeFragment)
+        administradorDeSensorGPS.requestLocationUpdates(
+            solicitudDatosGPS,
+            object : LocationCallback() {
+                override fun onLocationResult(location: LocationResult?) {
+                    latitud = location?.lastLocation?.latitude ?: 0.0
+                    longitud = location?.lastLocation?.longitude ?: 0.0
+                    homeFragment = HomeFragment(latitud, longitud)
+                    makeCurrentFragment(homeFragment)
+                }
+            },
+            Looper.getMainLooper()
+        )
+
+
+    }
+
+    private fun configurarSensor() {
+        administradorSensor = getSystemService(SENSOR_SERVICE) as SensorManager
+        administradorSensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
+            administradorSensor.registerListener(
+                this,
+                it,
+                SensorManager.SENSOR_DELAY_FASTEST,
+                SensorManager.SENSOR_DELAY_FASTEST
+            )
+        }
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
+            val arribaAbajo = event.values[1]
+
+            barraMovimiento.apply {
+               if(arribaAbajo > 0)
+                translationY = arribaAbajo * -3
             }
-        }, Looper.getMainLooper())
+        }
+    }
 
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        return
+    }
 
+    override fun onDestroy() {
+        administradorSensor.unregisterListener(this)
+        super.onDestroy()
     }
 
 }
