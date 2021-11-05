@@ -3,16 +3,10 @@ package ar.unlam.nohaapp.ui.view
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -27,17 +21,14 @@ import ar.unlam.nohaapp.notificaciones.data.model.LugarEntity
 import ar.unlam.nohaapp.notificaciones.iu.fragments.NotificationFragment
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.android.ext.android.inject
 
 
-class MainActivity : AppCompatActivity(), SensorEventListener {
+class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val database: RoomNohaDB by inject()
 
     private lateinit var administradorDeSensorGPS: FusedLocationProviderClient
-    private lateinit var administradorSensor: SensorManager
-    private lateinit var barraMovimiento: BottomNavigationView
     private var longitud = 0.0
     private var latitud = 0.0
     private val CAMERA_REQUEST_CODE = 0
@@ -54,9 +45,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        barraMovimiento = binding.accelerate
-        configurarSensor()
 
         administradorDeSensorGPS = LocationServices.getFusedLocationProviderClient(this)
         //Se ejecuta la acción al hacer click en el botón de camara, el botón todavía no está hecho.
@@ -383,40 +371,5 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             },
             Looper.getMainLooper()
         )
-
-
     }
-
-    private fun configurarSensor() {
-        administradorSensor = getSystemService(SENSOR_SERVICE) as SensorManager
-        administradorSensor.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
-            administradorSensor.registerListener(
-                this,
-                it,
-                SensorManager.SENSOR_DELAY_FASTEST,
-                SensorManager.SENSOR_DELAY_FASTEST
-            )
-        }
-    }
-
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
-            val arribaAbajo = event.values[1]
-
-            barraMovimiento.apply {
-               if(arribaAbajo > 0)
-                translationY = arribaAbajo * -3
-            }
-        }
-    }
-
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-        return
-    }
-
-    override fun onDestroy() {
-        administradorSensor.unregisterListener(this)
-        super.onDestroy()
-    }
-
 }
