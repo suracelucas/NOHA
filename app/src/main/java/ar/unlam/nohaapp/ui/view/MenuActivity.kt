@@ -19,7 +19,6 @@ class MenuActivity : ComponentActivity() {
         val viewModel: MenuActivityViewModel by viewModels()
         val itemList = viewModel.itemList
         val buyList = viewModel.buyList
-        val newList = mutableListOf<ItemMenu>()
 
         setContent {
             NOHATheme {
@@ -36,14 +35,10 @@ class MenuActivity : ComponentActivity() {
                     }, content = {
                         MenuScreen(itemList, buyList) { string, item ->
                             if (string == "-") {
-                                if (newList.contains(item)) {
-                                    newList.remove(item)
-                                    buyList.value = newList
-                                }
+                                viewModel.removeItemNewList(item)
                             }
                             if (string == "+") {
-                                newList.add(item)
-                                buyList.value = newList
+                                viewModel.addItemNewList(item)
                             }
                         }
                     }

@@ -14,7 +14,21 @@ class MenuActivityViewModel : ViewModel() {
     }
 
     val itemList = ItemsMenuList().loadItemsMenu()
-    val buyList = MutableLiveData<MutableList<ItemMenu>>()
+    var buyList = MutableLiveData<MutableList<ItemMenu>>(mutableListOf())
+
+    fun addItemNewList(item: ItemMenu) {
+        val newList = buyList.value?.toMutableList()
+        newList?.add(item)
+        buyList.value = newList!!
+    }
+
+    fun removeItemNewList(item: ItemMenu) {
+        val newList = buyList.value?.toMutableList()
+        if (newList?.contains(item) == true) {
+            newList.remove(item)
+            buyList.value = newList!!
+        }
+    }
 
     sealed class State {
         object Loading : State()
