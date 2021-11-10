@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HomeFragment">
+    tools:context=".fragments.HomeFragment"
+    >
 
     <TextView
         android:id="@+id/diaSemana"
@@ -48,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/novedades"
+
         app:layout_constraintStart_toStartOf="@+id/temperature"
         app:layout_constraintTop_toBottomOf="@+id/temperature"
         tools:text="Soleado" />
@@ -66,18 +67,43 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diaSemana" />
+        app:layout_constraintTop_toBottomOf="@+id/diaSemana"
 
-    <TextView
-        android:id="@+id/noData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        />
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motionLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:text="@string/noData"
-        android:textSize="30sp"
-        android:visibility="gone"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/novedades" />
+        app:layout_constraintTop_toBottomOf="@+id/diaSemana"
+        app:layoutDescription="@xml/fragment_home_scene"
+        tools:showPaths="true"
+        android:visibility="gone"
+        >
 
+        <TextView
+            android:id="@+id/noData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/noData"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageNoData"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/tumbleweed"
+            tools:layout_editor_absoluteX="323dp"
+            tools:layout_editor_absoluteY="571dp" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
