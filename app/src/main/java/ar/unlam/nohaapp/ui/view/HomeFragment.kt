@@ -67,7 +67,7 @@ class HomeFragment(private val latitud: Double, private val longitud: Double) : 
         })
         homeFragmentViewModel.listaActividades.observe(viewLifecycleOwner, Observer { actividades ->
             if (actividades.isEmpty()) {
-                homeBinding.noData.visibility = View.VISIBLE
+                homeBinding.motionLayout.visibility = View.VISIBLE
                 homeBinding.novedades.adapter = ItemsAdapter(emptyList())
                 Toast.makeText(
                     requireContext(),
@@ -75,7 +75,7 @@ class HomeFragment(private val latitud: Double, private val longitud: Double) : 
                     Toast.LENGTH_LONG,
                 ).show()
             } else {
-                homeBinding.noData.visibility = View.INVISIBLE
+                homeBinding.motionLayout.visibility = View.INVISIBLE
                 homeBinding.novedades.adapter = ItemsAdapter(actividades)
             }
         })

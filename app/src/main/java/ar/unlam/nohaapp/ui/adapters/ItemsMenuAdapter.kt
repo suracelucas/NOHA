@@ -3,7 +3,7 @@ package ar.unlam.nohaapp.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ar.unlam.nohaapp.data.ItemMenu
+import ar.unlam.nohaapp.data.model.ItemMenu
 import ar.unlam.nohaapp.databinding.ItemMenuBinding
 
 class ItemsMenuAdapter(
