@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start"
+        app:motionInterpolator="linear"
+        app:duration="5500"
+        app:autoTransition="animateToEnd"
+        app:touchAnchorId="@+id/imageNoData"
+        app:touchAnchorSide="right"
+        app:dragDirection="dragRight"
+        >
+        <KeyFrameSet>
+            <KeyPosition
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.07"
+                app:framePosition="25"
+                app:motionTarget="@id/imageNoData"/>
+            <KeyPosition
+                app:keyPositionType="pathRelative"
+                app:percentY="0"
+                app:framePosition="50"
+                app:motionTarget="@id/imageNoData"/>
+            <KeyPosition
+                app:keyPositionType="pathRelative"
+                app:percentY="-0.10"
+                app:framePosition="75"
+                app:motionTarget="@id/imageNoData"/>
+        </KeyFrameSet>
+
+    </Transition>
+
+    <Transition
+        app:constraintSetEnd="@+id/end"
+        app:constraintSetStart="@+id/start"
+        app:autoTransition="jumpToStart"/>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/imageNoData"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="-80dp"
+            app:transitionEasing="linear">
+
+        </Constraint>
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/imageNoData"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="-80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:rotation="303"
+            app:transitionEasing="decelerate">
+
+        </Constraint>
+    </ConstraintSet>
+</MotionScene>

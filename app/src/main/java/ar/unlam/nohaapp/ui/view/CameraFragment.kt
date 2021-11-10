@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.jar.Manifest
 
-typealias LumaListener = (luma : Double) -> Unit
 class CameraFragment(private val context : MainActivity) : Fragment() {
     private lateinit var cameraBinding: FragmentCameraBinding
     // <- Inicio, Camera
@@ -39,7 +38,7 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
 
     // <- Inicio, funciones de camara
     private fun startCamera(){
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         // Con el Runnable, el Executor corre en el Thread principal
         cameraProviderFuture.addListener(Runnable {
             // Une el lifecycle de la camara al lifecycle del de la vista
@@ -60,10 +59,11 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
 
                 // Casos de uso, unir vistas
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, barcodeAnalyzer)
+
             } catch (exc: Exception){
                 Log.e(TAG, "No se pueden unir las vistas", exc)
             }
-        }, ContextCompat.getMainExecutor(context))
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     override fun onDestroy() {

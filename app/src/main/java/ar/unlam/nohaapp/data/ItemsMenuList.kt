@@ -1,5 +1,7 @@
 package ar.unlam.nohaapp.data
 
+import ar.unlam.nohaapp.data.model.ItemMenu
+
 class ItemsMenuList {
     fun loadItemsMenu(): List<ItemMenu> {
         return listOf(
