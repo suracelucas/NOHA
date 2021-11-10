@@ -1,5 +1,9 @@
 package ar.unlam.nohaapp.data
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+
 class ItemsMenuList {
     fun loadItemsMenu(): List<ItemMenu> {
         return listOf(
@@ -10,5 +14,10 @@ class ItemsMenuList {
             ItemMenu("Agua", 50),
             ItemMenu("Gaseosa", 80)
         )
+    }
+
+    suspend fun getAll() = withContext(Dispatchers.IO) {
+        delay(2000)
+        loadItemsMenu()
     }
 }

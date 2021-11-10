@@ -42,6 +42,11 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion '1.5.21'
     }
 }
 
@@ -93,6 +98,16 @@ dependencies {
     // GPS
     implementation 'com.google.android.gms:play-services-location:18.0.0'
 
+
+    // JETPACK COMPOSE
+    implementation "androidx.compose.ui:ui:1.0.4"
+    implementation "androidx.compose.material:material:1.0.4"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.0.4"
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.compose.runtime:runtime-livedata:1.1.0-beta02'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.4"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.0.4"
 
     implementation project(":notificaciones")
 }
