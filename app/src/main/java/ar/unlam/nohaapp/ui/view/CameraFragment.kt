@@ -1,5 +1,6 @@
 package ar.unlam.nohaapp.ui.view
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -17,20 +18,21 @@ import androidx.core.content.ContextCompat
 import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.FragmentCameraBinding
 import ar.unlam.nohaapp.domain.QRCodeAnalyzer
+import ar.unlam.nohaapp.domain.RESULTADO
 import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.jar.Manifest
 
-class CameraFragment(private val context : MainActivity) : Fragment() {
+class CameraFragment : Fragment() {
     private lateinit var cameraBinding: FragmentCameraBinding
     // <- Inicio, Camera
     private lateinit var cameraExecutor: ExecutorService
     // -> Fin, Camera
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cameraBinding = FragmentCameraBinding.inflate(LayoutInflater.from(context))
+        cameraBinding = FragmentCameraBinding.inflate(LayoutInflater.from(requireContext()))
         startCamera()
         // Crea el Thread para la camara */
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -52,7 +54,7 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
             val barcodeAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-                .also { imageAnalysis -> imageAnalysis.setAnalyzer(cameraExecutor, QRCodeAnalyzer(context)) }
+                .also { imageAnalysis -> imageAnalysis.setAnalyzer(cameraExecutor, QRCodeAnalyzer{codigoQr(it)})}
             try{
                 // Asegurar que nada esta unido al cameraProvider
                 cameraProvider.unbindAll()
@@ -85,5 +87,18 @@ class CameraFragment(private val context : MainActivity) : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return cameraBinding.root
+    }
+
+    @Synchronized
+    fun codigoQr(rawValue : String){
+        if(rawValue.subSequence(0, 6).equals("HAB - ")){
+            cameraExecutor.shutdown()
+            var habitacion = rawValue.subSequence(6, rawValue.length)
+            var intent = Intent(requireContext(), MenuActivity::class.java).apply {
+                putExtra(RESULTADO, habitacion)
+            }
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 }
