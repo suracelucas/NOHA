@@ -1,29 +1,22 @@
 package ar.unlam.nohaapp.ui.view
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import ar.unlam.nohaapp.R
 import ar.unlam.nohaapp.databinding.FragmentCameraBinding
 import ar.unlam.nohaapp.domain.QRCodeAnalyzer
 import ar.unlam.nohaapp.domain.RESULTADO
-import kotlinx.android.synthetic.main.fragment_camera.*
-import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.jar.Manifest
 
 class CameraFragment : Fragment() {
     private lateinit var cameraBinding: FragmentCameraBinding
