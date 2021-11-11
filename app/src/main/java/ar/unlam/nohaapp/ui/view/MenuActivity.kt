@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import ar.unlam.nohaapp.composables.MenuScreen
+import ar.unlam.nohaapp.domain.RESULTADO
 import ar.unlam.nohaapp.ui.theme.NOHATheme
 import ar.unlam.nohaapp.ui.viewmodel.MenuActivityViewModel
 
@@ -18,6 +19,7 @@ class MenuActivity : ComponentActivity() {
         val viewModel: MenuActivityViewModel by viewModels()
         val itemList = viewModel.itemList
         val buyList = viewModel.buyList
+        val resultado = intent.getStringExtra(RESULTADO).toString()
 
         setContent {
             NOHATheme {
@@ -32,7 +34,7 @@ class MenuActivity : ComponentActivity() {
                                 }
                             })
                     }, content = {
-                        MenuScreen(itemList, buyList,
+                        MenuScreen(itemList, buyList, resultado,
                             onClick = { string, item ->
                                 if (string == "-") {
                                     viewModel.removeItemNewList(item)

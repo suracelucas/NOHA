@@ -25,6 +25,7 @@ import ar.unlam.nohaapp.ui.viewmodel.MenuActivityViewModel
 fun MenuScreen(
     itemList: List<ItemMenu>,
     buyList: MutableLiveData<MutableList<ItemMenu>>,
+    resultado: String,
     onClick: (string: String, item: ItemMenu) -> Unit,
     onButtonPagar: () -> Unit
 ) {
@@ -38,7 +39,7 @@ fun MenuScreen(
             Surface(Modifier.padding(all = 8.dp)) {
                 Column(Modifier.fillMaxHeight()) {
                     Text(
-                        "Pedido para habitación ###",
+                        "Pedido para habitación $resultado",
                         textAlign = TextAlign.Center,
                         fontSize = 36.sp
                     )
