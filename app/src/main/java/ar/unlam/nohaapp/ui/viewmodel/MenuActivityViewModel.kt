@@ -3,7 +3,7 @@ package ar.unlam.nohaapp.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import ar.unlam.nohaapp.data.ItemMenu
+import ar.unlam.nohaapp.data.model.ItemMenu
 import ar.unlam.nohaapp.data.ItemsMenuList
 
 class MenuActivityViewModel : ViewModel() {

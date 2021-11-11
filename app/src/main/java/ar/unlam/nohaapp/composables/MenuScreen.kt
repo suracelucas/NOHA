@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ar.unlam.nohaapp.data.ItemMenu
+import ar.unlam.nohaapp.data.model.ItemMenu
 import ar.unlam.nohaapp.ui.viewmodel.MenuActivityViewModel
 
 @Composable
