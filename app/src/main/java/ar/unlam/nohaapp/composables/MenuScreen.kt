@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,7 +25,8 @@ import ar.unlam.nohaapp.ui.viewmodel.MenuActivityViewModel
 fun MenuScreen(
     itemList: List<ItemMenu>,
     buyList: MutableLiveData<MutableList<ItemMenu>>,
-    onClick: (string: String, item: ItemMenu) -> Unit
+    onClick: (string: String, item: ItemMenu) -> Unit,
+    onButtonPagar: () -> Unit
 ) {
     val viewModel: MenuActivityViewModel = viewModel()
     val state = viewModel.state.observeAsState()
@@ -47,8 +49,14 @@ fun MenuScreen(
                             }
                         }
                     }
-                    Box(modifier = Modifier.fillMaxSize(), Alignment.BottomStart) {
-                        TotalView(composeList)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column { TotalView(composeList) }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            BotonPagar { onButtonPagar() }
+                        }
                     }
                 }
             }
@@ -133,6 +141,18 @@ fun TotalView(composeList: MutableList<ItemMenu>?) {
         }
     }
     Text("Total: $${total}", fontSize = 36.sp)
+}
+
+@Composable
+fun BotonPagar(onClick: () -> Unit) {
+    Button(onClick = onClick, Modifier.padding(top = 7.dp)) {
+        Icon(
+            Icons.Filled.ShoppingCart,
+            contentDescription = "Pagar",
+            tint = Color.White,
+            modifier = Modifier.size(35.dp)
+        )
+    }
 }
 
 @Composable

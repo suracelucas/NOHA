@@ -8,7 +8,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import ar.unlam.nohaapp.composables.MenuScreen
-import ar.unlam.nohaapp.data.ItemMenu
 import ar.unlam.nohaapp.ui.theme.NOHATheme
 import ar.unlam.nohaapp.ui.viewmodel.MenuActivityViewModel
 
@@ -33,14 +32,18 @@ class MenuActivity : ComponentActivity() {
                                 }
                             })
                     }, content = {
-                        MenuScreen(itemList, buyList) { string, item ->
-                            if (string == "-") {
-                                viewModel.removeItemNewList(item)
-                            }
-                            if (string == "+") {
-                                viewModel.addItemNewList(item)
-                            }
-                        }
+                        MenuScreen(itemList, buyList,
+                            onClick = { string, item ->
+                                if (string == "-") {
+                                    viewModel.removeItemNewList(item)
+                                }
+                                if (string == "+") {
+                                    viewModel.addItemNewList(item)
+                                }
+                            },
+                            onButtonPagar = {
+
+                            })
                     }
                 )
             }
