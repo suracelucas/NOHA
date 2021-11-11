@@ -2,7 +2,10 @@ package ar.unlam.nohaapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val Orange = Color(0xFFFF8F00)
+val OrangeLight = Color(0xFFFFC046)
+val OrangeDark = Color(0xFFC56000)
+
+val Second = Color(0xFF212121)
+val SecondLight = Color(0xFF484848)
+val SecondDark = Color(0xFF000000)
