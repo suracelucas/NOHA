@@ -1,5 +1,6 @@
 package ar.unlam.nohaapp.composables
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -154,6 +157,62 @@ fun BotonPagar(onClick: () -> Unit) {
             modifier = Modifier.size(35.dp)
         )
     }
+}
+
+@Composable
+fun DialogPago(onClick: () -> Unit) {
+    val viewModel: MenuActivityViewModel = viewModel()
+    val openDialog = viewModel.toggleAlert
+
+    AlertDialog(
+        onDismissRequest = { openDialog.value = false },
+        title = {
+            Text("Cómo pagar", fontSize = 30.sp, fontStyle = FontStyle.Italic)
+        },
+        text = {
+            Column {
+                Divider(
+                    color = Color.Gray, thickness = 1.dp,
+                    modifier = Modifier.padding(0.dp, 10.dp)
+                )
+                Text("Anotá este mail:", fontSize = 20.sp)
+                Text(
+                    "tu_hotel@hotel.com", fontSize = 25.sp, fontWeight = FontWeight.Bold,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                )
+                Text(
+                    "Entrá a tu cuenta de MercadoPago. \n" +
+                            "Ingresá el mail anterior. \n" +
+                            "Ingresá el monto. \n" +
+                            "Ingresá tu habitación. \n" +
+                            "Aceptá los términos. \n" +
+                            "Confirmá el envío.",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(top = 3.dp),
+                )
+            }
+        },
+        buttons = {
+            Row(
+                modifier = Modifier
+                    .padding(all = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    onClick = { openDialog.value = false }
+                ) {
+                    Text("Cerrar", fontSize = 20.sp, color = Color.White)
+                }
+                Button(
+                    onClick = { onClick() },
+                    Modifier.padding(start = 5.dp)
+                ) {
+                    Text("Continuar", fontSize = 20.sp, color = Color.White)
+                }
+            }
+        }
+    )
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package ar.unlam.nohaapp.ui.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -15,6 +16,7 @@ class MenuActivityViewModel : ViewModel() {
 
     val itemList = ItemsMenuList().loadItemsMenu()
     var buyList = MutableLiveData<MutableList<ItemMenu>>(mutableListOf())
+    var toggleAlert = mutableStateOf(false)
 
     fun addItemNewList(item: ItemMenu) {
         val newList = buyList.value?.toMutableList()
@@ -28,6 +30,11 @@ class MenuActivityViewModel : ViewModel() {
             newList.remove(item)
             buyList.value = newList!!
         }
+    }
+
+    fun toggleAlert() {
+        if (toggleAlert.value) toggleAlert.value = false
+        if (!toggleAlert.value) toggleAlert.value = true
     }
 
     sealed class State {
