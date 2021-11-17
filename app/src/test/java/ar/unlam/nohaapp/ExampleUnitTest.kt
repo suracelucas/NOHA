@@ -1,5 +1,7 @@
 package ar.unlam.nohaapp
 
+import ar.unlam.nohaapp.data.ActivitiesRepository
+import ar.unlam.nohaapp.data.DayRepository
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,4 +16,17 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun testQueSeObtengaElDia(){
+        val dia = DayRepository(4).getDay()
+        assertEquals(dia, R.string.miercoles)
+    }
+
+    @Test
+    fun testObtenerDiaInvalido(){
+        val dia = DayRepository(78).getDay()
+        assertEquals(dia, R.string.sabado)
+    }
+
 }

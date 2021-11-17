@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import ar.unlam.nohaapp.data.ActivitiesRepository
+import ar.unlam.nohaapp.domain.GetTodosDias
 import ar.unlam.nohaapp.notificaciones.data.local.ActividadDao
 import ar.unlam.nohaapp.notificaciones.data.local.LugarDao
 import ar.unlam.nohaapp.notificaciones.data.local.LugaresConActividadesDao
