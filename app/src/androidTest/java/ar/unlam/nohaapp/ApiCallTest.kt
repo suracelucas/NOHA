@@ -13,6 +13,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import retrofit2.Response
@@ -29,9 +30,11 @@ class ApiCallTest {
         val givenWeather = Weather(list, WeatherMain("28"))
         val tiempo = mockk<OpenWeatherApi>(relaxed = true)
         coEvery { tiempo.getWeather(any(), any()) } returns Response.success(givenWeather)
+        //val prueba = runBlocking { API(retrofit).getAPI(-56.00, 65.00) }
+        //val sut = GetWeather(ApiRepository(API(retrofit)))
+        //runBlocking { sut.invoke(-56.00, 65.00) }
+        val resultado = runBlocking { tiempo.getWeather(-56.00, 65.00) }
+        assertThat(givenWeather, equalTo(resultado.body()))
 
-        val sut = GetWeather(ApiRepository(API(retrofit)))
-        runBlocking { sut(-56.00, 65.00) }
-        coVerify { sut }
     }
 }
