@@ -5,11 +5,10 @@ import ar.unlam.nohaapp.notificaciones.data.model.ActividadEntity
 import java.util.*
 
 class ActivitiesRepository(private val database : RoomNohaDB) {
-    fun getActividades(): List<ActividadEntity>{
+    fun getActividades(dia: Int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)): List<ActividadEntity>{
         val todosLosDias = database.actividadDao().getActividadesByDiaYNotificar(8)
         val diasDeSemana: List<ActividadEntity>
         val lista: MutableList<ActividadEntity> = mutableListOf()
-        val dia = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
         lista.addAll(todosLosDias)
         if (dia == 2 || dia == 3 || dia == 4 ||
             dia == 5 || dia == 6
